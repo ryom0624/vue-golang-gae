@@ -1,0 +1,27 @@
+version: '3.5'
+services:
+  backend-api:
+    build:
+      context: ./backend-api
+      target: build
+    volumes:
+      - ./backend-api:/go/app
+    command: ["realize", "start", "--run"]
+    environment:
+      FRONTEND_HOST: "http://localhost:8081"
+    ports:
+      - 8080:8080
+
+  frontend:
+    build: ./frontend
+    ports:
+      - 8081:8081
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    stdin_open: true
+    tty: true
+    environment:
+      NODE_ENV: "development"
+      VUE_APP_DEVELOPMENT_BACKENDHOST: "http://localhost:8080"
+    command: ["npm", "run", "serve"]

@@ -1,1 +1,12 @@
+.DS_Store
+
 .idea
+
+frontend/.env*
+frontend/dist
+frontend/node_modules
+
+backend-api/db/articles.sqlite3
+
+
+*/secret.yaml

@@ -1,0 +1,16 @@
+service: default
+
+runtime: nodejs10
+
+env_variables:
+  VUE_APP_PRODUCTION_BACKENDHOST: 'backend-api-dot-testing-190927-golang.appspot.com'
+
+handlers:
+  - url: /
+    static_files: dist/index.html
+    upload: dist/index.html
+
+  - url: /(.*)
+    static_files: dist/\1
+    upload: dist/(.*)
+

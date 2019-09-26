@@ -1,0 +1,8 @@
+node_modules
+public/
+src/
+.gitignore
+babel.config.js
+pakage.json
+README.md
+Dockerfile

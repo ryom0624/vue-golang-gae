@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.dockerignore
+.gcloudignore
+
+# appengine用なので不要
+secret.yaml

@@ -1,0 +1,10 @@
+service: backend-api
+
+runtime: go112
+
+includes:
+  - secret.yaml
+
+handlers:
+  - url: /.*
+    script: auto

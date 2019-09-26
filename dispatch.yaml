@@ -1,0 +1,6 @@
+dispatch:
+  - url: "testing-190927-golang.appspot.com/"
+    service: default
+
+  - url: "*/api/*"
+    service: backend-api
