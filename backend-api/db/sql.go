@@ -6,6 +6,7 @@ import (
 	"os"
 )
 
+
 func GetAllArticles() (articles []models.Article, err error) {
 	stmt, err := Conn.Query("select * from articles")
 	if err != nil {

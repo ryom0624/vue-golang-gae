@@ -5,15 +5,28 @@ $ git clone https://github.com/ryom0624/vue-golang-docker.git
 
 # Getting-Started
 
+First, create and login your GCP account.
+```
+$ gcluod auth login
+$ gcloud auth application-default login
+```
+
+Then, start application in below command.
 ```
 $ docker-compose up -d
 ```
 
-※ Please install docker before getting-started
+## Dependency
+You must install on your environment, if you didn't install these.
+
+- Docker  
 https://docs.docker.com/
 
+- google-cloud-sdk
+https://cloud.google.com/sdk/downloads?hl=ja
 
 # Development
+
 
 ```
 $ docker-compose exec frontend npm install

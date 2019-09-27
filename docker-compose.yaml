@@ -4,11 +4,14 @@ services:
     build:
       context: ./backend-api
       target: build
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: "/key.json"
+      FRONTEND_HOST: "http://localhost:8081"
+      PROJECT_ID: "testing-190927-golang"
     volumes:
       - ./backend-api:/go/app
+      - ~/.config/gcloud/application_default_credentials.json:/key.json:ro
     command: ["realize", "start", "--run"]
-    environment:
-      FRONTEND_HOST: "http://localhost:8081"
     ports:
       - 8080:8080
 
