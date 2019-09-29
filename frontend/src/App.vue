@@ -1,7 +1,11 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/">Home</router-link> |
+      <ul>
+        <li><router-link to="/">Home</router-link> | </li>
+        <li><router-link to="/articles">Article</router-link> | </li>
+        <li><router-link to="/posts">Posts</router-link> | </li>
+      </ul>
     </div>
     <router-view/>
   </div>
@@ -22,6 +26,14 @@
 #nav a {
   font-weight: bold;
   color: #2c3e50;
+}
+
+#nav ul {
+  list-style: none;
+}
+
+#nav li {
+  display: inline;
 }
 
 #nav a.router-link-exact-active {

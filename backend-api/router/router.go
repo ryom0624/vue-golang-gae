@@ -83,6 +83,7 @@ func GetPosts(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		log.Fatalf("Faild to connect datastore (reason: %v)\n",err)
+		return
 	}
 	defer client.Close()
 
@@ -93,7 +94,10 @@ func GetPosts(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		log.Fatalf("Faild to get all posts (reason: %v)\n",err)
+		return
 	}
+
+	fmt.Fprintf(os.Stdout, "res: %v\n", posts)
 
 	c.JSON(http.StatusOK, posts)
 }
@@ -104,6 +108,7 @@ func GetPost(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		log.Fatalf("Faild to connect datastore (reason: %v)\n",err)
+		return
 	}
 	defer client.Close()
 
@@ -115,7 +120,10 @@ func GetPost(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		log.Fatalf("Faild to get specifeid post (reason: %v)\n",err)
+		return
 	}
+
+	fmt.Fprintf(os.Stdout, "res: %v\n", post)
 
 	c.JSON(http.StatusOK, post)
 }
@@ -126,20 +134,24 @@ func NewPost(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		log.Fatalf("Faild to connect to datastore reason: %v\n", err)
+		return
 	}
 	defer client.Close()
 
 	var post models.Post
 	c.BindJSON(&post)
+	fmt.Fprintf(os.Stdout, "POST_DATA: %v\n", post)
 	c.JSON(http.StatusOK, post)
 
 
 	if post.Slug == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Slug is required"})
+		return
 	}
 
 	if post.Title == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Title is required"})
+		return
 	}
 
 	//u, err := uuid.NewRandom()
@@ -158,6 +170,7 @@ func NewPost(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		log.Fatalf("Failed to save post: %v", err)
+		return
 	}
 
 	c.JSON(http.StatusOK, res)
@@ -168,6 +181,7 @@ func UpdatePost(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
+		return
 	}
 	defer client.Close()
 
@@ -179,17 +193,22 @@ func UpdatePost(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		log.Fatalf("Faild to get all posts (reason: %v)\n",err)
+		return
 	}
 
 	c.BindJSON(&post)
+	fmt.Fprintf(os.Stdout, "POST_DATA: %v\n", post)
+
 	post.Updated = time.Now()
 
 	if post.Slug == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Slug is required"})
+		return
 	}
 
 	if post.Title == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Title is required"})
+		return
 	}
 
 	err = client.Delete(c, key)
@@ -200,6 +219,7 @@ func UpdatePost(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		log.Fatalf("Failed to save post: %v", err)
+		return
 	}
 
 	c.JSON(http.StatusOK, res)

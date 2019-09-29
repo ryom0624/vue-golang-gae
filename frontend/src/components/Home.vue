@@ -2,7 +2,8 @@
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
     <h1>{{msg}}</h1>
-    <h2><router-link to="/articles">Articleへ</router-link></h2>
+    <h2><router-link to="/articles">Articlesへ</router-link></h2>
+    <h2><router-link to="/posts">Postsへ</router-link></h2>
   </div>
 </template>
 
