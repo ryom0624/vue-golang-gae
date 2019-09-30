@@ -7,7 +7,7 @@
         <p>{{article.Title}}</p>
       </li>
     </ul>
-    <h2><router-link to="/">Homeへ</router-link></h2>
+    <p><router-link to="/">Homeへ</router-link></p>
   </div>
 </template>
 
@@ -24,25 +24,24 @@ export default {
   },
   methods: {
     pageto: function (id) {
-      this.$router.push(`/articles/${id}`)
+      this.$router.push(`/article/${id}`)
     }
   },
 
   created () {
     if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
       axios.get(`${process.env.VUE_APP_DEVELOPMENT_BACKENDHOST}/api/v1/articles`).then(res => {
-        console.log(res.data)
+        console.log('%cGET index RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
         this.articles = res.data
       })
     } else if (process.env.NODE_ENV === 'production') {
       axios.get('https://backend-api-dot-testing-190927-golang.appspot.com/api/v1/articles').then(res => {
-        console.log(res.data)
+        console.log('%cGET index RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
         this.articles = res.data
       })
     // } else if (process.env.NODE_ENV === 'production') {
-    //   console.log('fuga')
     //   axios.get(process.env.VUE_APP_PRODUCTION_BACKENDHOST + '/api/v1/articles').then(res => {
-    //     console.log(res.data)
+    //     console.log('%cGET index RESPONSE DATA : %c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
     //     this.articles = res.data
     //   })
     }

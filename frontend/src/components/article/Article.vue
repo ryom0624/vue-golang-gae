@@ -2,7 +2,7 @@
   <div class="article">
     <h1>{{article.Title}}</h1>
     <h2>{{article.Description}}</h2>
-    <p><router-link to="/">Homeへ</router-link></p>
+    <p><router-link to="/articles">Articlesへ</router-link></p>
   </div>
 </template>
 
@@ -21,17 +21,17 @@ export default {
     // urlで指定された動的パラメーターから商品情報をとってくる。
     if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
       axios.get(`${process.env.VUE_APP_DEVELOPMENT_BACKENDHOST}/api/v1/articles/${this.$route.params.id}`).then(res => {
-        console.log(res.data)
+        console.log('%cGET show RESPONSE DATA: %c' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
         this.article = res.data
       })
     } else if (process.env.NODE_ENV === 'production') {
       axios.get(`https://backend-api-dot-testing-190927-golang.appspot.com/api/v1/articles/${this.$route.params.id}`).then(res => {
-        console.log(res.data)
+        console.log('GET show : ' + JSON.stringify(res.data, null, 4))
         this.article = res.data
       })
     // } else if (process.env.NODE_ENV === 'production') {
     //   axios.get(process.env.VUE_APP_PRODUCTION_BACKENDHOST + `/api/v1/articles/${this.$route.params.id}`).then(res => {
-    //     console.log(res.data)
+    //     console.log('GET show : ' + JSON.stringify(res.data, null, 4))
     //     this.article = res.data
     //   })
     }

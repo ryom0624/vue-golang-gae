@@ -15,4 +15,3 @@ ADD . .
 
 RUN npm install axios -S --no-optional
 RUN npm install --no-optional
-

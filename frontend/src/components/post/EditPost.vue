@@ -34,10 +34,10 @@ export default {
   methods: {
     fetchData () {
       this.loding = false
-      console.log('params: ' + this.$route.params.slug)
+      console.log('%cPARAMATER: %c' + this.$route.params.slug, 'font-weight: bold; color: red;', '')
       if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         axios.get(`${process.env.VUE_APP_DEVELOPMENT_BACKENDHOST}/api/v1/post/` + this.$route.params.slug).then(res => {
-          console.log('GET res data:' + JSON.stringify(res.data))
+          console.log('%cGET edit RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
           this.post = res.data
         })
       }
@@ -45,11 +45,21 @@ export default {
     updatePost () {
       if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
         axios.post(`${process.env.VUE_APP_DEVELOPMENT_BACKENDHOST}/api/v1/post/` + this.$route.params.slug, this.post).then(res => {
-          console.log('POST res data:' + JSON.stringify(res.data))
+          console.log('%cPOST edit RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
           this.post = res.data
         })
-        console.log('postData' + JSON.stringify(this.post))
+      } else {
+        axios.post(`https://backend-api-dot-testing-190927-golang.appspot.com/api/v1/post` + this.$route.params.slug, this.post).then(res => {
+          console.log('%cPOST edit RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
+          this.post = res.data
+        })
       }
+      //   axios.get(`${process.env.VUE_APP_PRODUCTION_BACKENDHOST}/api/v1/post` + this.$route.params.slug, this.post).then(res => {
+      //     console.log('%cPOST edit RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
+      //     this.post = res.data
+      //   })
+      // }
+      console.log('%cpostData : %c' + JSON.stringify(this.post), 'color: red; font-weight:bold', '')
       this.$router.push(`/post/${this.post.slug}`)
     }
   }

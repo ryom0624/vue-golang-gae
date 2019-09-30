@@ -27,18 +27,26 @@ export default {
   },
   methods: {
     post () {
-      if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
-        let postData = {
-          title: this.title,
-          description: this.description,
-          slug: this.slug
-        }
-        axios.post(`${process.env.VUE_APP_DEVELOPMENT_BACKENDHOST}/api/v1/post`, postData).then(res => {
-          console.log(res.data)
-        })
-        console.log(postData)
-        postData = ''
+      let postData = {
+        title: this.title,
+        description: this.description,
+        slug: this.slug
       }
+      if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+        axios.post(`${process.env.VUE_APP_DEVELOPMENT_BACKENDHOST}/api/v1/post`, postData).then(res => {
+          console.log('%cPOST new RESPONSE data :%c' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
+        })
+      } else {
+        axios.post(`https://backend-api-dot-testing-190927-golang.appspot.com/api/v1/post`, postData).then(res => {
+          console.log('%cPOST new RESPONSE data :%c' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
+        })
+      }
+      //   axios.post(`${process.env.VUE_APP_PRODUCTION_BACKENDHOST}/api/v1/post`, postData).then(res => {
+      //     console.log('%cPOST new RESPONSE data :%c' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
+      //   })
+      // }
+      console.log('%cpostData : %c' + JSON.stringify(this.post), 'color: red; font-weight:bold', '')
+      postData = ''
       this.$router.push(`/posts`)
     }
   }

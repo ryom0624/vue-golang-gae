@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import Articles from '@/components/Articles'
-import Article from '@/components/Article'
-import IndexPosts from '@/components/IndexPosts'
-import ShowPost from '@/components/ShowPost'
-import NewPost from '@/components/NewPost'
-import EditPost from '@/components/EditPost'
+import Articles from '@/components/article/Articles'
+import Article from '@/components/article/Article'
+import IndexPosts from '@/components/post/IndexPosts'
+import ShowPost from '@/components/post/ShowPost'
+import NewPost from '@/components/post/NewPost'
+import EditPost from '@/components/post/EditPost'
 
 Vue.use(Router)
 
@@ -23,7 +23,7 @@ export default new Router({
       component: Articles
     },
     {
-      path: '/articles/:id',
+      path: '/article/:id',
       name: 'Article',
       component: Article
     },

@@ -1,9 +1,8 @@
 <template>
   <div class="home">
     <img alt="Vue logo" src="../assets/logo.png">
-    <h1>{{msg}}</h1>
-    <h2><router-link to="/articles">Articlesへ</router-link></h2>
-    <h2><router-link to="/posts">Postsへ</router-link></h2>
+    <h1>Vue.js golang Application</h1>
+    <p>{{msg}}</p>
   </div>
 </template>
 
@@ -12,7 +11,7 @@ export default {
   name: 'Home',
   data () {
     return {
-      msg: 'This is Home'
+      msg: 'Welcome to vue-golang application! This web site\'s data uses Google Cloud Datastore.'
     }
   }
 }
