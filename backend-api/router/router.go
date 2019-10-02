@@ -3,15 +3,14 @@ package router
 import (
 	"backend/db"
 	"backend/models"
-	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"log"
 	"net/http"
 	"os"
 	"strconv"
 	"cloud.google.com/go/datastore"
 	"time"
+	"github.com/golang/glog"
 )
 
 var Router *gin.Engine
@@ -51,9 +50,9 @@ func ping(c *gin.Context) {
 
 func articles(c *gin.Context) {
 	res, err := db.GetAllArticles()
-	fmt.Fprintf(os.Stdout, "res: %v\n", res)
+	glog.Infof("res: %v\n", res)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		glog.Errorf("Error: %v\n", err)
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
@@ -63,14 +62,14 @@ func articles(c *gin.Context) {
 func article(c *gin.Context) {
 	id, err := strconv.Atoi(c.Param("id"))
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		glog.Errorf("Error: %v\n", err)
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
 	res, err := db.GetArticle(id)
-	fmt.Fprintf(os.Stdout, "res: %v\n", res)
+	glog.Infof("Error: %v\n", err)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+		glog.Errorf("Error: %v\n", err)
 		c.JSON(http.StatusInternalServerError, err)
 		return
 	}
@@ -82,7 +81,7 @@ func GetPosts(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		log.Fatalf("Faild to connect datastore (reason: %v)\n",err)
+		glog.Errorf("Faild to connect datastore (reason: %v)\n",err)
 		return
 	}
 	defer client.Close()
@@ -93,11 +92,11 @@ func GetPosts(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		log.Fatalf("Faild to get all posts (reason: %v)\n",err)
+		glog.Errorf("Faild to get all posts (reason: %v)\n",err)
 		return
 	}
 
-	fmt.Fprintf(os.Stdout, "res: %v\n", posts)
+	glog.Infof( "res: %v\n", posts)
 
 	c.JSON(http.StatusOK, posts)
 }
@@ -107,7 +106,7 @@ func GetPost(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		log.Fatalf("Faild to connect datastore (reason: %v)\n",err)
+		glog.Errorf("Faild to connect datastore (reason: %v)\n",err)
 		return
 	}
 	defer client.Close()
@@ -118,12 +117,12 @@ func GetPost(c *gin.Context) {
 
 	err = client.Get(c, key, &post)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		log.Fatalf("Faild to get specifeid post (reason: %v)\n",err)
+		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": "hogehoge"})
+		glog.Errorf("Faild to get specifeid post (reason: %v)\n",err)
 		return
 	}
 
-	fmt.Fprintf(os.Stdout, "res: %v\n", post)
+	glog.Infof("res: %v\n", post)
 
 	c.JSON(http.StatusOK, post)
 }
@@ -133,24 +132,26 @@ func NewPost(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		log.Fatalf("Faild to connect to datastore reason: %v\n", err)
+		glog.Errorf("Faild to connect to datastore reason: %v\n", err)
 		return
 	}
 	defer client.Close()
 
 	var post models.Post
 	c.BindJSON(&post)
-	fmt.Fprintf(os.Stdout, "POST_DATA: %v\n", post)
+	glog.Infof("POST_DATA: %v\n", post)
 	c.JSON(http.StatusOK, post)
 
 
 	if post.Slug == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Slug is required"})
+		glog.Errorln("Error : Slug is required")
 		return
 	}
 
 	if post.Title == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Title is required"})
+		glog.Errorln("Error : Title is required")
 		return
 	}
 
@@ -169,7 +170,7 @@ func NewPost(c *gin.Context) {
 	res, err := client.Put(c, key, &post);
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		log.Fatalf("Failed to save post: %v", err)
+		glog.Errorf("Failed to save post: %v", err)
 		return
 	}
 
@@ -181,6 +182,7 @@ func UpdatePost(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
+		glog.Errorf("Faild to connect to datastore reason: %v\n", err)
 		return
 	}
 	defer client.Close()
@@ -192,22 +194,24 @@ func UpdatePost(c *gin.Context) {
 	err = client.Get(c, key, &post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		log.Fatalf("Faild to get all posts (reason: %v)\n",err)
+		glog.Errorf("Faild to get all posts (reason: %v)\n",err)
 		return
 	}
 
 	c.BindJSON(&post)
-	fmt.Fprintf(os.Stdout, "POST_DATA: %v\n", post)
+	glog.Infof("POST_DATA: %v\n", post)
 
 	post.Updated = time.Now()
 
 	if post.Slug == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Slug is required"})
+		glog.Errorln("Error : Slug is required")
 		return
 	}
 
 	if post.Title == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Title is required"})
+		glog.Errorln("Error : Title is required")
 		return
 	}
 
@@ -218,7 +222,7 @@ func UpdatePost(c *gin.Context) {
 	res, err := client.Put(c, key, &post);
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		log.Fatalf("Failed to save post: %v", err)
+		glog.Errorf("Failed to save post: %v", err)
 		return
 	}
 
