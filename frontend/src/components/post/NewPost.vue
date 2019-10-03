@@ -1,15 +1,38 @@
 <template>
-  <div class="newPost">
-    <h1>{{msg}}</h1>
-    title : <input v-model="title" type="text">
-    <p>title : {{title}}</p>
-    slug: <input v-model="slug" type="text">
-    <p>slug : {{slug}}</p>
-    description: <br>
-    <textarea v-model="description" rows="8"></textarea>
-    <p>description : {{description}}</p>
-    <input type="submit" @click="post()">
-  </div>
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="6">
+        <v-form
+          ref="form"
+          max-width="400"
+        >
+          <h1>New Post Form</h1>
+          <v-text-field
+           v-model="title"
+           :counter="10"
+           label="title"
+           requird>
+          </v-text-field>
+          <v-textarea
+            v-model="description"
+            rows="8"
+            clearable
+            clear-icon="cancel"
+            label="description"
+            value="This is description of the post"
+          >
+          </v-textarea>
+          <v-text-field
+            v-model="slug"
+            :counter="10"
+            label="slug"
+            requird>
+          </v-text-field>
+          <v-btn @click="post()">Submit</v-btn>
+        </v-form>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>

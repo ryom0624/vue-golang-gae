@@ -1,16 +1,40 @@
 <template>
-  <div class="editPost">
-    <div class="loading" v-if="loading">Loading...</div>
-
-    <div class="post" v-if="post">
-      <h1>{{msg}}</h1>
-      title : <input v-model="post.title" type="text"><br>
-      slug: <input v-model="post.slug" type="text"><br>
-      description: <br>
-      <textarea v-model="post.description" rows="8"></textarea><br>
-      <input type="submit" @click="updatePost()">
-    </div>
-  </div>
+  <v-container>
+    <v-row justify="center">
+      <v-col cols="6">
+        <div v-if="post">
+          <v-form
+            ref="form"
+            max-width="400"
+          >
+            <h1>Edit Post Form</h1>
+            <v-text-field
+              v-model="post.title"
+              :counter="25"
+              label="title"
+              requird>
+            </v-text-field>
+            <v-textarea
+              v-model="post.description"
+              rows="8"
+              clearable
+              clear-icon="cancel"
+              label="description"
+              value="This is description of the post"
+            >
+            </v-textarea>
+            <v-text-field
+              v-model="post.slug"
+              :counter="100"
+              label="slug"
+              requird>
+            </v-text-field>
+            <v-btn @click="updatePost()">Submit</v-btn>
+          </v-form>
+        </div>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script>
@@ -40,6 +64,12 @@ export default {
           console.log('%cGET edit RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
           this.post = res.data
         })
+      } else {
+        console.log('%cNODE_ENV: %c' + process.env.NODE_ENV, 'font-weight: bold; color: red;', '')
+        axios.get(`https://backend-api-dot-testing-190927-golang.appspot.com/api/v1/post/` + this.$route.params.slug).then(res => {
+          console.log('%cGET edit RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
+          this.post = res.data
+        })
       }
     },
     updatePost () {
@@ -49,7 +79,7 @@ export default {
           this.post = res.data
         })
       } else {
-        axios.post(`https://backend-api-dot-testing-190927-golang.appspot.com/api/v1/post` + this.$route.params.slug, this.post).then(res => {
+        axios.post(`https://backend-api-dot-testing-190927-golang.appspot.com/api/v1/post/` + this.$route.params.slug, this.post).then(res => {
           console.log('%cPOST edit RESPONSE DATA :%c ' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
           this.post = res.data
         })

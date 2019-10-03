@@ -1,12 +1,17 @@
 <template>
-  <div class="Post">
-
+  <v-container>
     <h1>{{msg}}</h1>
-    <h2>{{post.title}}</h2>
-    <p>{{post.description}}</p>
-    <p class="edit" @click="pageto(post.slug)">編集する</p>
-
-  </div>
+    <v-card
+      max-width="344"
+      class="mx-auto"
+    >
+      <v-card-title>{{post.title}}</v-card-title>
+      <v-card-text class="text-left">{{post.description}}</v-card-text>
+      <v-card-actions>
+        <v-btn text @click="pageto(post.slug)">Edit</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
