@@ -9,4 +9,5 @@ require (
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b
 	github.com/google/uuid v1.1.1
 	github.com/mattn/go-sqlite3 v1.11.0
+	gopkg.in/gomail.v2 v2.0.0-20160411212932-81ebce5c23df
 )

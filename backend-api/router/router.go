@@ -3,14 +3,15 @@ package router
 import (
 	"backend/db"
 	"backend/models"
+	"cloud.google.com/go/datastore"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/golang/glog"
+	"gopkg.in/gomail.v2"
 	"net/http"
 	"os"
 	"strconv"
-	"cloud.google.com/go/datastore"
 	"time"
-	"github.com/golang/glog"
 )
 
 var Router *gin.Engine
@@ -34,6 +35,8 @@ func init() {
 	router.POST("/api/v1/post", NewPost)
 	router.GET("/api/v1/post/:slug", GetPost)
 	router.POST("/api/v1/post/:slug", UpdatePost)
+
+	router.POST("api/v1/contact", PostContact)
 
 	router.NoRoute(func(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"message": "Page not Found"})
@@ -227,4 +230,80 @@ func UpdatePost(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, res)
+}
+
+func PostContact(c *gin.Context) {
+
+	sender := "sender@localhost"
+	receiver := c.PostForm("email")
+	subject := c.PostForm("subject")
+	body := c.PostForm("body")
+
+	glog.Info(receiver)
+
+	m := gomail.NewMessage()
+	m.SetHeader("From", sender)
+	m.SetHeader("To", receiver)
+	m.SetAddressHeader("Cc", sender, "CC")
+	m.SetHeader("Subject", subject)
+	m.SetBody("text/html", body)
+	//m.Attach("/home/Alex/lolcat.jpg")
+
+	d := gomail.Dialer{Host:"mailhog", Port: 1025}
+
+	// Send the email to Bob, Cora and Dan.
+	if err := d.DialAndSend(m); err != nil {
+		panic(err)
+	}
+
+	//sender := "sender@localhost"
+	//receiver := c.PostForm("email")
+	//subject := c.PostForm("subject")
+	//body := c.PostForm("body")
+	//glog.Info(body)
+	//
+	//
+	//d, err := smtp.Dial("mailhog:1025")
+	//if err != nil {
+	//	glog.Errorf("Failed to connect port 1025 (reason: %v)\n", err)
+	//}
+	//
+	//d.Mail(sender)
+	//d.Rcpt(receiver)
+	//d.Rcpt(sender)
+	//
+	//wc, err := d.Data()
+	//if err != nil {
+	//	glog.Errorf("Failed to create Mail Data (reason: %v)\n", err)
+	//}
+	//defer wc.Close()
+	//
+	//buf := bytes.NewBufferString("")
+	//
+	//buf.WriteString("To : " + receiver)
+	//buf.WriteString("\r\n")
+	//
+	//buf.WriteString("Cc : " + sender)
+	//buf.WriteString("\r\n")
+	//
+	//buf.WriteString("Subject : " + subject)
+	//buf.WriteString("\r\n")
+	//
+	//buf.WriteString("Body : " + body)
+	//buf.WriteString("\r\n")
+	//
+	//buf.WriteString("\r\n")
+	//
+	//if _, err = buf.WriteTo(wc); err != nil {
+	//	glog.Errorf("Failed to send Mail (reason: %v)\n", err)
+	//}
+	//d.Quit()
+
+	glog.Info("Finished")
+	glog.Info("**********************")
+	glog.Info("From :" + sender)
+	glog.Info("To :" + receiver)
+	glog.Info("Subject :" + subject)
+	glog.Info("Message Body :" + body)
+	glog.Info("**********************")
 }

@@ -28,3 +28,9 @@ services:
       NODE_ENV: "development"
       VUE_APP_DEVELOPMENT_BACKENDHOST: "http://localhost:8080"
     command: ["npm", "run", "serve"]
+
+  mailhog:
+    image: mailhog/mailhog
+    ports:
+      - "8025:8025"
+      - "1025:1025"

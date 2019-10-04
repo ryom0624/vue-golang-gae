@@ -8,6 +8,8 @@ import IndexPosts from '@/components/post/IndexPosts'
 import ShowPost from '@/components/post/ShowPost'
 import NewPost from '@/components/post/NewPost'
 import EditPost from '@/components/post/EditPost'
+import Contact from '@/components/contact/contact'
+import Thanks from '@/components/contact/thanks'
 
 Vue.use(Router)
 
@@ -52,6 +54,17 @@ export default new Router({
       path: '/post/:slug/edit',
       name: 'editPost',
       component: EditPost
+    },
+    {
+      path: '/contact',
+      name: 'contact',
+      component: Contact
+    },
+    {
+      path: '/thanks',
+      name: 'thanks',
+      component: Thanks
     }
+
   ]
 })
