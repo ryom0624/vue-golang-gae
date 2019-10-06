@@ -79,12 +79,11 @@ func article(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-
 func GetPosts(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		glog.Errorf("Faild to connect datastore (reason: %v)\n",err)
+		glog.Errorf("Faild to connect datastore (reason: %v)\n", err)
 		return
 	}
 	defer client.Close()
@@ -95,21 +94,20 @@ func GetPosts(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		glog.Errorf("Faild to get all posts (reason: %v)\n",err)
+		glog.Errorf("Faild to get all posts (reason: %v)\n", err)
 		return
 	}
 
-	glog.Infof( "res: %v\n", posts)
+	glog.Infof("res: %v\n", posts)
 
 	c.JSON(http.StatusOK, posts)
 }
-
 
 func GetPost(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		glog.Errorf("Faild to connect datastore (reason: %v)\n",err)
+		glog.Errorf("Faild to connect datastore (reason: %v)\n", err)
 		return
 	}
 	defer client.Close()
@@ -121,7 +119,7 @@ func GetPost(c *gin.Context) {
 	err = client.Get(c, key, &post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": "hogehoge"})
-		glog.Errorf("Faild to get specifeid post (reason: %v)\n",err)
+		glog.Errorf("Faild to get specifeid post (reason: %v)\n", err)
 		return
 	}
 
@@ -129,7 +127,6 @@ func GetPost(c *gin.Context) {
 
 	c.JSON(http.StatusOK, post)
 }
-
 
 func NewPost(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
@@ -144,7 +141,6 @@ func NewPost(c *gin.Context) {
 	c.BindJSON(&post)
 	glog.Infof("POST_DATA: %v\n", post)
 	c.JSON(http.StatusOK, post)
-
 
 	if post.Slug == "" {
 		c.JSON(http.StatusBadRequest, gin.H{"Error": "Slug is required"})
@@ -170,7 +166,7 @@ func NewPost(c *gin.Context) {
 
 	key := datastore.NameKey("Post", post.Slug, nil)
 
-	res, err := client.Put(c, key, &post);
+	res, err := client.Put(c, key, &post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		glog.Errorf("Failed to save post: %v", err)
@@ -179,7 +175,6 @@ func NewPost(c *gin.Context) {
 
 	c.JSON(http.StatusOK, res)
 }
-
 
 func UpdatePost(c *gin.Context) {
 	client, err := datastore.NewClient(c, ProjectID)
@@ -197,7 +192,7 @@ func UpdatePost(c *gin.Context) {
 	err = client.Get(c, key, &post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
-		glog.Errorf("Faild to get all posts (reason: %v)\n",err)
+		glog.Errorf("Faild to get all posts (reason: %v)\n", err)
 		return
 	}
 
@@ -222,7 +217,7 @@ func UpdatePost(c *gin.Context) {
 
 	key = datastore.NameKey("Post", post.Slug, nil)
 
-	res, err := client.Put(c, key, &post);
+	res, err := client.Put(c, key, &post)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"InternalServerError": err})
 		glog.Errorf("Failed to save post: %v", err)
@@ -239,7 +234,6 @@ func PostContact(c *gin.Context) {
 	subject := c.PostForm("subject")
 	body := c.PostForm("body")
 
-	glog.Info(receiver)
 
 	m := gomail.NewMessage()
 	m.SetHeader("From", sender)
@@ -249,11 +243,11 @@ func PostContact(c *gin.Context) {
 	m.SetBody("text/html", body)
 	//m.Attach("/home/Alex/lolcat.jpg")
 
-	d := gomail.Dialer{Host:"mailhog", Port: 1025}
+	d := gomail.Dialer{Host: "mailhog", Port: 1025}
 
 	// Send the email to Bob, Cora and Dan.
 	if err := d.DialAndSend(m); err != nil {
-		panic(err)
+		glog.Errorf("Faild to send email. (reason: %v)\n", err)
 	}
 
 	//sender := "sender@localhost"
@@ -301,9 +295,14 @@ func PostContact(c *gin.Context) {
 
 	glog.Info("Finished")
 	glog.Info("**********************")
+	glog.Info("RequestData :")
+	glog.Info(c.Request)
 	glog.Info("From :" + sender)
 	glog.Info("To :" + receiver)
 	glog.Info("Subject :" + subject)
 	glog.Info("Message Body :" + body)
 	glog.Info("**********************")
+
+	c.JSON(http.StatusOK, "Thanks for sending mail")
+
 }

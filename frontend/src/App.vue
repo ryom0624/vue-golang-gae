@@ -31,6 +31,11 @@
           <span class="mr-2">helloWord</span>
         </v-btn>
       </router-link>
+      <router-link to="/contact" class="router-link">
+        <v-btn text>
+          <span class="mr-2">contact</span>
+        </v-btn>
+      </router-link>
     </v-app-bar>
 
     <v-content>

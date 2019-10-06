@@ -54,8 +54,11 @@ export default {
         subject: this.subject,
         body: this.body
       }
+      console.log('data', data)
       axios.post(`${process.env.VUE_APP_DEVELOPMENT_BACKENDHOST}/api/v1/contact`, data).then(res => {
-        console.log('%cPOST new RESPONSE data :%c' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
+        console.log('data', data)
+        console.log('%cPOST REQUEST data :%c' + data, 'color:red; font-weight:bold;', '')
+        console.log('%cPOST contact RESPONSE data :%c' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
       })
       data = ''
       this.$router.push(`/thanks`)
