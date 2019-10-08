@@ -4,11 +4,12 @@ import (
 	"backend/db"
 	"backend/models"
 	"cloud.google.com/go/datastore"
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
-	"gopkg.in/gomail.v2"
 	"net/http"
+	"net/smtp"
 	"os"
 	"strconv"
 	"time"
@@ -227,28 +228,38 @@ func UpdatePost(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+
 func PostContact(c *gin.Context) {
-
-	sender := "sender@localhost"
-	receiver := c.PostForm("email")
-	subject := c.PostForm("subject")
-	body := c.PostForm("body")
-
-
-	m := gomail.NewMessage()
-	m.SetHeader("From", sender)
-	m.SetHeader("To", receiver)
-	m.SetAddressHeader("Cc", sender, "CC")
-	m.SetHeader("Subject", subject)
-	m.SetBody("text/html", body)
-	//m.Attach("/home/Alex/lolcat.jpg")
-
-	d := gomail.Dialer{Host: "mailhog", Port: 1025}
-
-	// Send the email to Bob, Cora and Dan.
-	if err := d.DialAndSend(m); err != nil {
-		glog.Errorf("Faild to send email. (reason: %v)\n", err)
-	}
+	// Using MailHog
+	//var contact models.Contact
+	//c.BindJSON(&contact)
+	//
+	//fmt.Fprintf(os.Stdout, "contact: %v\n", contact)
+	//
+	//m := gomail.NewMessage()
+	//m.SetHeader("From", contact.Email)
+	//m.SetHeader("To", "")
+	//m.SetAddressHeader("Cc", "sender@localhost", "Sender")
+	//m.SetHeader("Subject", contact.Subject)
+	//m.SetBody("text/html", contact.Body)
+	////m.Attach("/home/Alex/lolcat.jpg")
+	//
+	//d := gomail.NewDialer("smtp.gmail.com", 587, "", "")
+	//
+	//// Send the email to Bob, Cora and Dan.
+	//if err := d.DialAndSend(m); err != nil {
+	//	glog.Errorf("Faild to send email. (reason: %v)\n", err)
+	//}
+	//
+	//glog.Info("Finished")
+	//glog.Info("**********************")
+	//glog.Info("From : sender@localhost")
+	//glog.Info("To :" + contact.Email)
+	//glog.Info("Subject :" + contact.Subject)
+	//glog.Info("Message Body :" + contact.Body)
+	//glog.Info("**********************")
+	//
+	//c.JSON(http.StatusOK, "Thanks for sending mail")
 
 	//sender := "sender@localhost"
 	//receiver := c.PostForm("email")
@@ -288,21 +299,40 @@ func PostContact(c *gin.Context) {
 	//
 	//buf.WriteString("\r\n")
 	//
+	//
 	//if _, err = buf.WriteTo(wc); err != nil {
 	//	glog.Errorf("Failed to send Mail (reason: %v)\n", err)
 	//}
 	//d.Quit()
 
-	glog.Info("Finished")
-	glog.Info("**********************")
-	glog.Info("RequestData :")
-	glog.Info(c.Request)
-	glog.Info("From :" + sender)
-	glog.Info("To :" + receiver)
-	glog.Info("Subject :" + subject)
-	glog.Info("Message Body :" + body)
-	glog.Info("**********************")
 
-	c.JSON(http.StatusOK, "Thanks for sending mail")
+	// Using Gmail
+	// You should enable permission for less secure apps from this link
+	// https://myaccount.google.com/u/1/lesssecureapps?pageId=none
 
+	var contact models.Contact
+	c.BindJSON(&contact)
+
+	from := contact.Email
+
+	// Configure your Gmail address
+	to := "account@gmail.com"
+
+	// Configure your Gmail password
+	auth := smtp.PlainAuth("", from, "", "smtp.gmail.com")
+
+	msg := []byte("" +
+		"From: 送信した人 <" + from + ">\r\n" +
+		"To: " + to + "\r\n" +
+		"Subject:" + contact.Subject + "\r\n" +
+		"\r\n" +
+		contact.Body + "\r\n" +
+		"")
+
+	err := smtp.SendMail("smtp.gmail.com:587", auth, from, []string{to}, msg)
+	if err != nil {
+		fmt.Fprintf(os.Stdout, "failed to send email (reason: %v)\n", err)
+		return
+	}
+	fmt.Fprint(os.Stdout, "success!!")
 }

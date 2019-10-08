@@ -49,18 +49,18 @@ export default {
   },
   methods: {
     post () {
-      let data = {
+      let contactData
+      contactData = {
         email: this.email,
         subject: this.subject,
         body: this.body
       }
-      console.log('data', data)
-      axios.post(`${process.env.VUE_APP_DEVELOPMENT_BACKENDHOST}/api/v1/contact`, data).then(res => {
-        console.log('data', data)
-        console.log('%cPOST REQUEST data :%c' + data, 'color:red; font-weight:bold;', '')
+      console.log('contactData', contactData)
+      axios.post('http://localhost:8080/api/v1/contact', contactData).then(res => {
+        console.log('contactDdata', contactData)
+        console.log('%cPOST REQUEST data :%c' + contactData, 'color:red; font-weight:bold;', '')
         console.log('%cPOST contact RESPONSE data :%c' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
       })
-      data = ''
       this.$router.push(`/thanks`)
     }
   }

@@ -68,7 +68,6 @@ export default {
       //     console.log('%cPOST new RESPONSE data :%c' + JSON.stringify(res.data, null, 4), 'color:red; font-weight:bold;', '')
       //   })
       // }
-      console.log('%cpostData : %c' + JSON.stringify(this.post), 'color: red; font-weight:bold', '')
       postData = ''
       this.$router.push(`/posts`)
     }
